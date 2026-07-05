@@ -122,37 +122,63 @@ def grade_answer(answer: str, requirements: list[str | list[str]]) -> bool:
 def grade_submission(rubric: dict[str, Any], answers: dict[str, dict[str, str]]) -> dict[str, Any]:
     results = {}
     passed_count = 0
+    submitted_count = 0
+    wrong_count = 0
     total_count = 0
     for case_id, case_rubric in rubric["cases"].items():
         case_results = {}
         for label in ("A", "B", "C", "D"):
             total_count += 1
             answer = answers.get(case_id, {}).get(label, "")
-            ok = grade_answer(answer, case_rubric[label])
+            submitted = bool(answer.strip())
+            ok = submitted and grade_answer(answer, case_rubric[label])
+            if submitted:
+                submitted_count += 1
             if ok:
                 passed_count += 1
-            case_results[label] = {"passed": ok, "present": bool(answer.strip())}
+            elif submitted:
+                wrong_count += 1
+            case_results[label] = {"passed": ok, "present": submitted}
         results[case_id] = case_results
     percentage = round((passed_count / total_count) * 100, 2) if total_count else 0.0
-    deduction = round(100 / total_count, 2) if total_count else 0.0
+    item_value = round(100 / total_count, 2) if total_count else 0.0
+    if passed_count == total_count:
+        status = "passed"
+    elif wrong_count:
+        status = "needs-correction"
+    else:
+        status = "in-progress"
     return {
-        "passed": passed_count == total_count,
+        "status": status,
+        "passed": status == "passed",
         "passed_count": passed_count,
+        "submitted_count": submitted_count,
+        "wrong_count": wrong_count,
+        "not_submitted_count": total_count - submitted_count,
         "total_count": total_count,
         "percentage": percentage,
-        "deduction_per_wrong_answer": deduction,
+        "item_value": item_value,
         "cases": results,
     }
 
 
 def build_report(issue_number: int, score: dict[str, Any]) -> str:
-    status = "passed" if score["passed"] else "needs correction"
+    status = str(score["status"]).replace("-", " ")
     lines = [
         f"### Workshop grading: {status}",
         "",
-        f"Score: **{score['percentage']:.2f}%** ({score['passed_count']}/{score['total_count']})",
+        f"Score: **{score['percentage']:.2f}%** ({score['passed_count']}/{score['total_count']} complete)",
         "",
-        f"Each wrong or missing answer deducts **{score['deduction_per_wrong_answer']:.2f} percentage points**.",
+        (
+            f"Submitted answers: **{score['passed_count']} correct**, "
+            f"**{score['wrong_count']} check again**, "
+            f"**{score['not_submitted_count']} not submitted**."
+        ),
+        "",
+        (
+            f"Each correct answer adds **{score['item_value']:.2f} percentage points**. "
+            "Blank answers are neutral; submitted wrong answers are marked `check again`."
+        ),
         "",
         "| Case | A | B | C | D |",
         "| --- | --- | --- | --- | --- |",
@@ -161,7 +187,12 @@ def build_report(issue_number: int, score: dict[str, Any]) -> str:
         cells = []
         for label in ("A", "B", "C", "D"):
             item = case_result[label]
-            cells.append("pass" if item["passed"] else "check again")
+            if item["passed"]:
+                cells.append("pass")
+            elif item["present"]:
+                cells.append("check again")
+            else:
+                cells.append("not submitted")
         lines.append(f"| {case_id} | " + " | ".join(cells) + " |")
     lines.extend(
         [

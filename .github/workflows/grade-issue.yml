@@ -64,12 +64,26 @@ jobs:
             const owner = context.repo.owner;
             const repo = context.repo.repo;
             const issue_number = Number(result.issue_number);
-            const add = result.passed ? ["passed"] : ["needs-correction"];
-            const remove = result.passed ? ["needs-correction", "needs-review"] : ["passed", "needs-review"];
+            const status = result.status || (result.passed ? "passed" : "needs-correction");
+            const managedLabels = {
+              "passed": { color: "0e8a16", description: "Submission passed all answer checks" },
+              "in-progress": { color: "1d76db", description: "Submission is partially complete with no submitted wrong answers" },
+              "needs-correction": { color: "fbca04", description: "Submission needs another pass" },
+            };
+
+            for (const [name, options] of Object.entries(managedLabels)) {
+              try {
+                await github.rest.issues.getLabel({ owner, repo, name });
+              } catch (error) {
+                if (error.status !== 404) throw error;
+                await github.rest.issues.createLabel({ owner, repo, name, ...options });
+              }
+            }
 
             await github.rest.issues.createComment({ owner, repo, issue_number, body: report });
-            await github.rest.issues.addLabels({ owner, repo, issue_number, labels: add });
-            for (const name of remove) {
+            await github.rest.issues.addLabels({ owner, repo, issue_number, labels: [status] });
+            for (const name of [...Object.keys(managedLabels), "needs-review"]) {
+              if (name === status) continue;
               try {
                 await github.rest.issues.removeLabel({ owner, repo, issue_number, name });
               } catch (error) {

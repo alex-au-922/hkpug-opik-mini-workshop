@@ -10,8 +10,8 @@ Start here:
 
 ## How To Submit
 
-Open a new issue using the **Mini workshop answers** template. Submit one issue
-with all six cases:
+Open a new issue using the **Mini workshop answers** template. Keep one issue
+for your group, and edit it as you answer more cases:
 
 ```text
 Case: 001
@@ -23,8 +23,9 @@ D:
 
 Your answers are plain GitHub issue text; you do not need to encrypt anything.
 The GitHub Action checks the issue against an encrypted answer rubric and
-reports a percentage score. There are 24 answer items, so each wrong or missing
-item deducts 4.17 percentage points.
+reports a percentage score. There are 24 answer items, so each correct answer
+adds 4.17 percentage points. Blank answers are neutral; submitted wrong answers
+are marked `check again`.
 
 ## Workshop Story
 

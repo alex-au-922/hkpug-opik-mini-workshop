@@ -1,5 +1,5 @@
 name: Mini workshop answers
-description: Submit one issue containing answers for all six cases.
+description: Submit one issue and keep editing it as you answer cases.
 title: "[Workshop answers] "
 labels:
   - submission
@@ -8,10 +8,10 @@ body:
   - type: markdown
     attributes:
       value: |
-        Submit one plain-text issue with all six cases. Keep answers short:
-        span names, document IDs, and concise decisions are enough. The checker
-        reports a percentage score; each wrong or missing answer deducts 4.17
-        percentage points.
+        Submit one plain-text issue and keep editing it as you answer more
+        cases. Keep answers short: span names, document IDs, and concise
+        decisions are enough. Blank answers are ignored until you fill them in;
+        submitted wrong answers are marked for correction.
   - type: input
     id: group
     attributes:
@@ -24,39 +24,9 @@ body:
     id: answers
     attributes:
       label: Answers
-      description: Fill in A-D for each case.
+      description: Fill in one case or several cases. Add more case blocks as you progress.
       value: |
         Case: 001
-        A:
-        B:
-        C:
-        D:
-
-        Case: 002
-        A:
-        B:
-        C:
-        D:
-
-        Case: 003
-        A:
-        B:
-        C:
-        D:
-
-        Case: 004
-        A:
-        B:
-        C:
-        D:
-
-        Case: 005
-        A:
-        B:
-        C:
-        D:
-
-        Case: 006
         A:
         B:
         C:
