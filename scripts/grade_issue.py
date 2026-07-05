@@ -133,10 +133,14 @@ def grade_submission(rubric: dict[str, Any], answers: dict[str, dict[str, str]])
                 passed_count += 1
             case_results[label] = {"passed": ok, "present": bool(answer.strip())}
         results[case_id] = case_results
+    percentage = round((passed_count / total_count) * 100, 2) if total_count else 0.0
+    deduction = round(100 / total_count, 2) if total_count else 0.0
     return {
         "passed": passed_count == total_count,
         "passed_count": passed_count,
         "total_count": total_count,
+        "percentage": percentage,
+        "deduction_per_wrong_answer": deduction,
         "cases": results,
     }
 
@@ -146,7 +150,9 @@ def build_report(issue_number: int, score: dict[str, Any]) -> str:
     lines = [
         f"### Workshop grading: {status}",
         "",
-        f"Score: **{score['passed_count']}/{score['total_count']}**",
+        f"Score: **{score['percentage']:.2f}%** ({score['passed_count']}/{score['total_count']})",
+        "",
+        f"Each wrong or missing answer deducts **{score['deduction_per_wrong_answer']:.2f} percentage points**.",
         "",
         "| Case | A | B | C | D |",
         "| --- | --- | --- | --- | --- |",
@@ -195,4 +201,3 @@ def main() -> None:
 
 if __name__ == "__main__":
     main()
-

@@ -8,8 +8,10 @@ body:
   - type: markdown
     attributes:
       value: |
-        Submit one issue with all six cases. Keep answers short: span names,
-        document IDs, and concise decisions are enough.
+        Submit one plain-text issue with all six cases. Keep answers short:
+        span names, document IDs, and concise decisions are enough. The checker
+        reports a percentage score; each wrong or missing answer deducts 4.17
+        percentage points.
   - type: input
     id: group
     attributes:
@@ -61,4 +63,3 @@ body:
         D:
     validations:
       required: true
-

@@ -21,8 +21,10 @@ C:
 D:
 ```
 
-The GitHub Action checks your issue against an encrypted answer rubric and adds
-either `passed` or `needs-correction`.
+Your answers are plain GitHub issue text; you do not need to encrypt anything.
+The GitHub Action checks the issue against an encrypted answer rubric and
+reports a percentage score. There are 24 answer items, so each wrong or missing
+item deducts 4.17 percentage points.
 
 ## Workshop Story
 
@@ -36,4 +38,3 @@ pane.
 The answer rubric is stored as `.github/workshop/answers.json.cms`, encrypted
 with OpenSSL CMS. The private key is stored in the repository secret
 `ANSWER_KEY_PRIVATE_KEY`.
-
