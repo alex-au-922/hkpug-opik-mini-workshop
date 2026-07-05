@@ -11,8 +11,9 @@ body:
         Open one issue for your group. After creating it, submit answers as
         comments in the issue timeline. Each new non-bot comment is graded once.
 
-        Keep answers short: span names, document IDs, and concise decisions are
-        enough. If you want to retry, post a new comment.
+        Answers must be deterministic and short: exact span names, document
+        IDs, metric names, or choice tokens only. Do not write prose in answer
+        fields. If you want to retry, post a new comment.
   - type: input
     id: group
     attributes:
@@ -30,9 +31,9 @@ body:
         Submit answers as comments using this format:
 
         Case: 001
-        A:
-        B:
-        C:
-        D:
+        A: <short-answer-token>
+        B: <span-name>
+        C: <document-id>
+        D: <choice-token>
     validations:
       required: false

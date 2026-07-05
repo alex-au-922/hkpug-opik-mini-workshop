@@ -14,6 +14,8 @@ from typing import Any
 ANSWER_LABEL_RE = re.compile(r"^\s*([ABCD])\s*[:：-]\s*(.*)$", re.IGNORECASE)
 CASE_RE = re.compile(r"^\s*(?:#{1,6}\s*)?(?:case|question)\s*[:#-]?\s*(\d{3})\b", re.IGNORECASE)
 FENCE_RE = re.compile(r"^\s*```")
+MAX_EXACT_ANSWER_CHARS = 80
+MAX_EXACT_ANSWER_WORDS = 8
 
 
 def parse_args() -> argparse.Namespace:
@@ -42,6 +44,18 @@ def contains_term(answer: str, term: str | list[str]) -> bool:
     if isinstance(term, list):
         return any(normalize(option) in normalized for option in term)
     return normalize(term) in normalized
+
+
+def normalize_exact(value: str) -> str:
+    value = value.strip()
+    while len(value) >= 2 and value.startswith("`") and value.endswith("`"):
+        value = value[1:-1].strip()
+    return " ".join(value.lower().split())
+
+
+def is_short_answer(answer: str) -> bool:
+    words = answer.strip().split()
+    return len(answer.strip()) <= MAX_EXACT_ANSWER_CHARS and len(words) <= MAX_EXACT_ANSWER_WORDS
 
 
 def read_json(path: Path) -> dict[str, Any]:
@@ -182,9 +196,15 @@ def parse_answers(body: str) -> dict[str, dict[str, str]]:
     return answers
 
 
-def grade_answer(answer: str, requirements: list[str | list[str]]) -> bool:
+def grade_answer(answer: str, requirements: dict[str, Any] | list[str | list[str]]) -> bool:
     if not answer.strip():
         return False
+    if isinstance(requirements, dict):
+        accepted = requirements.get("answers")
+        if not isinstance(accepted, list):
+            raise SystemExit("Exact answer rubric items must contain an answers list.")
+        normalized_answer = normalize_exact(answer)
+        return is_short_answer(answer) and any(normalize_exact(str(item)) == normalized_answer for item in accepted)
     return all(contains_term(answer, term) for term in requirements)
 
 
@@ -247,7 +267,7 @@ def build_report(submission: dict[str, Any], score: dict[str, Any]) -> str:
         "",
         (
             f"Each correct answer adds **{score['item_value']:.2f} percentage points**. "
-            "Blank answers are neutral; submitted wrong answers are marked `check again`."
+            "Use short exact answers; blank answers are neutral and submitted wrong answers are marked `check again`."
         ),
         "",
         "| Case | A | B | C | D |",

@@ -15,10 +15,10 @@ for your group. Submit answers as comments in that issue:
 
 ```text
 Case: 001
-A:
-B:
-C:
-D:
+A: <short-answer-token>
+B: <span-name>
+C: <document-id>
+D: <choice-token>
 ```
 
 Your answers are plain GitHub issue text; you do not need to encrypt anything.
@@ -26,6 +26,10 @@ The GitHub Action checks each new non-bot comment once against an encrypted
 answer rubric and reports a percentage score for that comment. There are 24
 answer items, so each correct answer adds 4.17 percentage points. Blank answers
 are neutral; submitted wrong answers are marked `check again`.
+
+Answers must be deterministic and short. Use the exact span name, document ID,
+metric name, or choice token requested by the question. Do not write prose
+explanations in the answer fields.
 
 If you want to retry or add more answers, post another comment.
 
