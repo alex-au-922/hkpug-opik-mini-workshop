@@ -1,0 +1,79 @@
+name: Grade Workshop Issue
+
+on:
+  issues:
+    types:
+      - opened
+      - edited
+      - reopened
+  workflow_dispatch:
+    inputs:
+      issue_number:
+        description: Issue number to grade
+        required: true
+        type: number
+
+permissions:
+  contents: read
+  issues: write
+
+concurrency:
+  group: grade-issue-${{ github.event.issue.number || inputs.issue_number }}
+  cancel-in-progress: true
+
+jobs:
+  grade:
+    if: ${{ github.event_name == 'workflow_dispatch' || !github.event.issue.pull_request }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6.0.2
+
+      - name: Decrypt answer rubric
+        env:
+          ANSWER_KEY_PRIVATE_KEY: ${{ secrets.ANSWER_KEY_PRIVATE_KEY }}
+        run: |
+          test -n "$ANSWER_KEY_PRIVATE_KEY"
+          printf '%s' "$ANSWER_KEY_PRIVATE_KEY" > "$RUNNER_TEMP/answer_key.pem"
+          chmod 600 "$RUNNER_TEMP/answer_key.pem"
+          openssl cms -decrypt \
+            -inform DER \
+            -in .github/workshop/answers.json.cms \
+            -recip .github/workshop/answer_key_cert.pem \
+            -inkey "$RUNNER_TEMP/answer_key.pem" \
+            -out "$RUNNER_TEMP/answers.json"
+          rm -f "$RUNNER_TEMP/answer_key.pem"
+
+      - name: Grade issue
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          ISSUE_NUMBER: ${{ github.event.issue.number || inputs.issue_number }}
+        run: |
+          python3 scripts/grade_issue.py \
+            --answer-key "$RUNNER_TEMP/answers.json" \
+            --issue-number "$ISSUE_NUMBER" \
+            --report "$RUNNER_TEMP/report.md" \
+            --result "$RUNNER_TEMP/result.json"
+
+      - name: Comment and label
+        uses: actions/github-script@v9.0.0
+        with:
+          script: |
+            const fs = require("fs");
+            const report = fs.readFileSync(`${process.env.RUNNER_TEMP}/report.md`, "utf8");
+            const result = JSON.parse(fs.readFileSync(`${process.env.RUNNER_TEMP}/result.json`, "utf8"));
+            const owner = context.repo.owner;
+            const repo = context.repo.repo;
+            const issue_number = Number(result.issue_number);
+            const add = result.passed ? ["passed"] : ["needs-correction"];
+            const remove = result.passed ? ["needs-correction", "needs-review"] : ["passed", "needs-review"];
+
+            await github.rest.issues.createComment({ owner, repo, issue_number, body: report });
+            await github.rest.issues.addLabels({ owner, repo, issue_number, labels: add });
+            for (const name of remove) {
+              try {
+                await github.rest.issues.removeLabel({ owner, repo, issue_number, name });
+              } catch (error) {
+                if (error.status !== 404) throw error;
+              }
+            }
+

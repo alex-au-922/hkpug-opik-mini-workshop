@@ -1,0 +1,64 @@
+name: Mini workshop answers
+description: Submit one issue containing answers for all six cases.
+title: "[Workshop answers] "
+labels:
+  - submission
+  - needs-review
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Submit one issue with all six cases. Keep answers short: span names,
+        document IDs, and concise decisions are enough.
+  - type: input
+    id: group
+    attributes:
+      label: Group
+      description: Your workshop group, for example group-00.
+      placeholder: group-00
+    validations:
+      required: true
+  - type: textarea
+    id: answers
+    attributes:
+      label: Answers
+      description: Fill in A-D for each case.
+      value: |
+        Case: 001
+        A:
+        B:
+        C:
+        D:
+
+        Case: 002
+        A:
+        B:
+        C:
+        D:
+
+        Case: 003
+        A:
+        B:
+        C:
+        D:
+
+        Case: 004
+        A:
+        B:
+        C:
+        D:
+
+        Case: 005
+        A:
+        B:
+        C:
+        D:
+
+        Case: 006
+        A:
+        B:
+        C:
+        D:
+    validations:
+      required: true
+

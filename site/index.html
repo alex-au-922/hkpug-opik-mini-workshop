@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>HKPUG Opik Mini Workshop</title>
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <header class="hero">
+      <nav class="topbar" aria-label="Workshop links">
+        <span class="brand">HKPUG Opik Mini Workshop</span>
+        <a href="https://github.com/alex-au-922/hkpug-opik-mini-workshop/issues/new/choose">Submit answers</a>
+      </nav>
+      <section class="hero-grid">
+        <div>
+          <p class="eyebrow">Trace debugging lab</p>
+          <h1>Read the code, inspect Opik, report what happened.</h1>
+          <p class="summary">
+            Six support-agent runs were flagged before release. Your job is to
+            use Opik traces, Experiments, and a small Python codebase to write a
+            concise debugging report.
+          </p>
+          <div class="actions">
+            <a class="button primary" href="https://group-00.opik-workshop.python.hk/code">Open code</a>
+            <a class="button" href="https://group-00.opik-workshop.python.hk/opik">Open Opik</a>
+          </div>
+        </div>
+        <div class="panel" aria-label="Workshop flow">
+          <ol class="flow">
+            <li><span>1</span><strong>Open the case list</strong><small>Use <code>questions.md</code> in VS Code.</small></li>
+            <li><span>2</span><strong>Inspect the trace</strong><small>Find the span or Experiment evidence.</small></li>
+            <li><span>3</span><strong>Check code when marked</strong><small>Only a few answers need Python reading.</small></li>
+            <li><span>4</span><strong>Submit one GitHub issue</strong><small>The Action checks all cases together.</small></li>
+          </ol>
+        </div>
+      </section>
+    </header>
+
+    <main>
+      <section class="band">
+        <h2>What You Are Investigating</h2>
+        <div class="case-grid">
+          <article><b>001</b><span>Wrong policy evidence</span></article>
+          <article><b>002</b><span>Slow fallback retrieval</span></article>
+          <article><b>003</b><span>Wrong tool argument</span></article>
+          <article><b>004</b><span>Persisted partial stream</span></article>
+          <article><b>005</b><span>Unsafe retrieved text</span></article>
+          <article><b>006</b><span>Weak release gate</span></article>
+        </div>
+      </section>
+
+      <section class="split">
+        <div>
+          <h2>Submission Format</h2>
+          <p>
+            Submit a single issue. Keep answers short; span names, document IDs,
+            and one-sentence conclusions are enough.
+          </p>
+        </div>
+        <pre><code>Case: 001
+A:
+B:
+C:
+D:
+
+Case: 002
+A:
+B:
+C:
+D:</code></pre>
+      </section>
+    </main>
+  </body>
+</html>
+
