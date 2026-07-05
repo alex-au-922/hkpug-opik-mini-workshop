@@ -23,7 +23,7 @@ concurrency:
 
 jobs:
   grade:
-    if: ${{ github.event_name == 'workflow_dispatch' || !github.event.issue.pull_request }}
+    if: ${{ github.event_name == 'workflow_dispatch' || (!github.event.issue.pull_request && contains(github.event.issue.labels.*.name, 'submission')) }}
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v6.0.2
@@ -76,4 +76,3 @@ jobs:
                 if (error.status !== 404) throw error;
               }
             }
-
