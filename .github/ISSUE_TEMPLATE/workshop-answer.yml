@@ -1,5 +1,5 @@
 name: Mini workshop answers
-description: Submit one issue and keep editing it as you answer cases.
+description: Open one group issue, then submit answers as comments.
 title: "[Workshop answers] "
 labels:
   - submission
@@ -8,10 +8,11 @@ body:
   - type: markdown
     attributes:
       value: |
-        Submit one plain-text issue and keep editing it as you answer more
-        cases. Keep answers short: span names, document IDs, and concise
-        decisions are enough. Blank answers are ignored until you fill them in;
-        submitted wrong answers are marked for correction.
+        Open one issue for your group. After creating it, submit answers as
+        comments in the issue timeline. Each new non-bot comment is graded once.
+
+        Keep answers short: span names, document IDs, and concise decisions are
+        enough. If you want to retry, post a new comment.
   - type: input
     id: group
     attributes:
@@ -21,15 +22,17 @@ body:
     validations:
       required: true
   - type: textarea
-    id: answers
+    id: note
     attributes:
-      label: Answers
-      description: Fill in one case or several cases. Add more case blocks as you progress.
+      label: Initial note
+      description: Optional. Put answers in comments after the issue is created.
       value: |
+        Submit answers as comments using this format:
+
         Case: 001
         A:
         B:
         C:
         D:
     validations:
-      required: true
+      required: false

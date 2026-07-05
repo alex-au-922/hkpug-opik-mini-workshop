@@ -1,16 +1,18 @@
 name: Grade Workshop Issue
 
 on:
-  issues:
+  issue_comment:
     types:
-      - opened
-      - edited
-      - reopened
+      - created
   workflow_dispatch:
     inputs:
       issue_number:
-        description: Issue number to grade
-        required: true
+        description: Issue number to grade from the issue body, for maintainer debugging
+        required: false
+        type: number
+      comment_id:
+        description: Issue comment ID to grade
+        required: false
         type: number
 
 permissions:
@@ -18,12 +20,12 @@ permissions:
   issues: write
 
 concurrency:
-  group: grade-issue-${{ github.event.issue.number || inputs.issue_number }}
+  group: grade-issue-${{ github.event.comment.id || inputs.comment_id || inputs.issue_number }}
   cancel-in-progress: true
 
 jobs:
   grade:
-    if: ${{ github.event_name == 'workflow_dispatch' || (!github.event.issue.pull_request && contains(github.event.issue.labels.*.name, 'submission')) }}
+    if: ${{ github.event_name == 'workflow_dispatch' || (!github.event.issue.pull_request && github.event.comment.user.type != 'Bot' && contains(github.event.issue.labels.*.name, 'submission')) }}
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v6.0.2
@@ -46,13 +48,21 @@ jobs:
       - name: Grade issue
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          ISSUE_NUMBER: ${{ github.event.issue.number || inputs.issue_number }}
+          ISSUE_NUMBER: ${{ github.event.issue.number || inputs.issue_number || '' }}
+          COMMENT_ID: ${{ github.event.comment.id || inputs.comment_id || '' }}
         run: |
-          python3 scripts/grade_issue.py \
-            --answer-key "$RUNNER_TEMP/answers.json" \
-            --issue-number "$ISSUE_NUMBER" \
-            --report "$RUNNER_TEMP/report.md" \
+          args=(
+            --answer-key "$RUNNER_TEMP/answers.json"
+            --report "$RUNNER_TEMP/report.md"
             --result "$RUNNER_TEMP/result.json"
+          )
+          if [ -n "$ISSUE_NUMBER" ]; then
+            args+=(--issue-number "$ISSUE_NUMBER")
+          fi
+          if [ -n "$COMMENT_ID" ]; then
+            args+=(--comment-id "$COMMENT_ID")
+          fi
+          python3 scripts/grade_issue.py "${args[@]}"
 
       - name: Comment and label
         uses: actions/github-script@v9.0.0
@@ -67,8 +77,8 @@ jobs:
             const status = result.status || (result.passed ? "passed" : "needs-correction");
             const managedLabels = {
               "passed": { color: "0e8a16", description: "Submission passed all answer checks" },
-              "in-progress": { color: "1d76db", description: "Submission is partially complete with no submitted wrong answers" },
-              "needs-correction": { color: "fbca04", description: "Submission needs another pass" },
+              "in-progress": { color: "1d76db", description: "Latest submission is partially complete with no submitted wrong answers" },
+              "needs-correction": { color: "fbca04", description: "Latest submission needs another pass" },
             };
 
             for (const [name, options] of Object.entries(managedLabels)) {
