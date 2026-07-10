@@ -3,69 +3,246 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta
+      name="description"
+      content="Investigate six Opik trace cases and submit a concise engineering report."
+    />
     <title>HKPUG Opik Mini Workshop</title>
     <link rel="stylesheet" href="./styles.css" />
+    <script src="./script.js" defer></script>
   </head>
   <body>
     <header class="hero">
       <nav class="topbar" aria-label="Workshop links">
-        <span class="brand">HKPUG Opik Mini Workshop</span>
-        <a href="https://github.com/alex-au-922/hkpug-opik-mini-workshop/issues/new/choose">Submit answers</a>
+        <a class="brand" href="#top">HKPUG Opik Mini Workshop</a>
+        <div class="topbar-links">
+          <a href="#questions">Questions</a>
+          <a
+            class="submit-link"
+            href="https://github.com/alex-au-922/hkpug-opik-mini-workshop/issues/new/choose"
+          >Submit answers</a>
+        </div>
       </nav>
-      <section class="hero-grid">
-        <div>
+
+      <section class="hero-grid" id="top">
+        <div class="hero-copy">
           <p class="eyebrow">Trace debugging lab</p>
-          <h1>Read the code, inspect Opik, report what happened.</h1>
+          <h1>Inspect the evidence. Report what happened.</h1>
           <p class="summary">
-            Six support-agent runs were flagged before release. Your job is to
-            use Opik traces, Experiments, and a small Python codebase to write a
-            concise debugging report.
+            Six support-agent runs were flagged before release. Use Opik traces,
+            Experiments, and a small Python codebase to prepare a concise report
+            for your manager.
           </p>
           <div class="actions">
-            <a class="button primary" href="https://group-00.opik-workshop.python.hk/code">Open code</a>
+            <a class="button primary" href="#questions">View questions</a>
             <a class="button" href="https://group-00.opik-workshop.python.hk/opik">Open Opik</a>
+            <a class="button" href="https://group-00.opik-workshop.python.hk/code">Open code</a>
           </div>
         </div>
-        <div class="panel" aria-label="Workshop flow">
+
+        <div class="flow-panel" aria-label="Workshop flow">
+          <div class="flow-heading">
+            <span>Debugging brief</span>
+            <strong>6 cases / 24 answers</strong>
+          </div>
           <ol class="flow">
-            <li><span>1</span><strong>Open the case list</strong><small>Use <code>questions.md</code> in VS Code.</small></li>
-            <li><span>2</span><strong>Inspect the trace</strong><small>Find the span or Experiment evidence.</small></li>
-            <li><span>3</span><strong>Check code when marked</strong><small>Only a few answers need Python reading.</small></li>
-            <li><span>4</span><strong>Comment your answers</strong><small>Each new comment is graded once.</small></li>
+            <li><span>1</span><div><strong>Choose a case</strong><small>Open its trace in Opik.</small></div></li>
+            <li><span>2</span><div><strong>Follow the spans</strong><small>Find the named evidence.</small></div></li>
+            <li><span>3</span><div><strong>Check marked code</strong><small>Only four answers need Python.</small></div></li>
+            <li><span>4</span><div><strong>Submit a comment</strong><small>Each comment is graded once.</small></div></li>
           </ol>
         </div>
       </section>
     </header>
 
     <main>
-      <section class="band">
-        <h2>What You Are Investigating</h2>
-        <div class="case-grid">
-          <article><b>001</b><span>Wrong policy evidence</span></article>
-          <article><b>002</b><span>Slow fallback retrieval</span></article>
-          <article><b>003</b><span>Wrong tool argument</span></article>
-          <article><b>004</b><span>Persisted partial stream</span></article>
-          <article><b>005</b><span>Unsafe retrieved text</span></article>
-          <article><b>006</b><span>Weak release gate</span></article>
+      <section class="questions-section" id="questions" aria-labelledby="questions-title">
+        <div class="section-heading">
+          <div>
+            <p class="section-label">Investigation queue</p>
+            <h2 id="questions-title">Workshop questions</h2>
+          </div>
+          <p>
+            Most answers are visible in Opik. Open Python only when a question
+            carries the <span class="inline-code-label">Code</span> label.
+          </p>
+        </div>
+
+        <nav class="case-nav" aria-label="Jump to a case">
+          <a href="#case-001" data-case-link="001"><b>001</b><span>Policy evidence</span></a>
+          <a href="#case-002" data-case-link="002"><b>002</b><span>Slow fallback</span></a>
+          <a href="#case-003" data-case-link="003"><b>003</b><span>Tool argument</span></a>
+          <a href="#case-004" data-case-link="004"><b>004</b><span>Stream cutoff</span></a>
+          <a href="#case-005" data-case-link="005"><b>005</b><span>Unsafe context</span></a>
+          <a href="#case-006" data-case-link="006"><b>006</b><span>Release gate</span></a>
+        </nav>
+
+        <div class="case-list">
+          <details class="case" id="case-001" open>
+            <summary>
+              <span class="case-number">001</span>
+              <span class="case-title"><strong>Policy evidence does not match customer</strong><small>Wrong policy retrieval / 4 questions</small></span>
+              <span class="case-toggle" aria-hidden="true"></span>
+            </summary>
+            <div class="case-body">
+              <p class="ba-flag"><strong>BA flag:</strong> The support answer says an activated Starter customer can receive a 30-day refund. BA suspects the answer used the wrong policy.</p>
+              <ol class="question-list" type="A">
+                <li class="question" data-question="001-A"><span class="evidence-badge opik">Opik</span><div>Which short token best describes what the agent answered?<span class="choices">Choose one: <code>eligible-30-day-refund</code>, <code>service-credit-only</code>, <code>not-refundable</code>.</span></div></li>
+                <li class="question" data-question="001-B"><span class="evidence-badge opik">Opik</span><div>Which Opik span shows the policy documents retrieved for the answer?</div></li>
+                <li class="question" data-question="001-C"><span class="evidence-badge opik">Opik</span><div>Which retrieved document should not have been used for an HK Starter customer?</div></li>
+                <li class="question" data-question="001-D"><span class="evidence-badge code">Code</span><div>In <code>shared/fixtures.py</code>, which token describes the correct HK Starter policy for activated seats?<span class="choices">Choose one: <code>activated-refundable</code>, <code>activated-not-refundable</code>, <code>pro-policy-applies</code>.</span></div></li>
+              </ol>
+              <div class="answer-template">
+                <pre><code id="template-001">Case: 001
+A:
+B:
+C:
+D:</code></pre>
+                <button type="button" data-copy-case="001">Copy template</button>
+              </div>
+            </div>
+          </details>
+
+          <details class="case" id="case-002">
+            <summary>
+              <span class="case-number">002</span>
+              <span class="case-title"><strong>Slow run with broad retrieval fallback</strong><small>Latency and evidence quality / 4 questions</small></span>
+              <span class="case-toggle" aria-hidden="true"></span>
+            </summary>
+            <div class="case-body">
+              <p class="ba-flag"><strong>BA flag:</strong> This refund run was much slower than nearby runs. BA wants to know whether the answer is safe or whether the fallback path changed the evidence.</p>
+              <ol class="question-list" type="A">
+                <li class="question" data-question="002-A"><span class="evidence-badge opik">Opik</span><div>Which span took the longest in this trace?</div></li>
+                <li class="question" data-question="002-B"><span class="evidence-badge opik">Opik</span><div>What fallback path ran after the primary retrieval problem?</div></li>
+                <li class="question" data-question="002-C"><span class="evidence-badge opik">Opik</span><div>Did the fallback use stronger or weaker evidence than the primary intended filter?<span class="choices">Choose one: <code>stronger-evidence</code>, <code>weaker-evidence</code>.</span></div></li>
+                <li class="question" data-question="002-D"><span class="evidence-badge opik">Opik</span><div>Should the manager approve this run without review?<span class="choices">Choose one: <code>approve</code>, <code>manual-review</code>, <code>reject</code>.</span></div></li>
+              </ol>
+              <div class="answer-template">
+                <pre><code id="template-002">Case: 002
+A:
+B:
+C:
+D:</code></pre>
+                <button type="button" data-copy-case="002">Copy template</button>
+              </div>
+            </div>
+          </details>
+
+          <details class="case" id="case-003">
+            <summary>
+              <span class="case-number">003</span>
+              <span class="case-title"><strong>Tool result is confident but input is wrong</strong><small>Tool-call argument mapping / 4 questions</small></span>
+              <span class="case-toggle" aria-hidden="true"></span>
+            </summary>
+            <div class="case-body">
+              <p class="ba-flag"><strong>BA flag:</strong> The refund calculator returned a confident "eligible" result, but the customer complained that they are on Starter, not Pro.</p>
+              <ol class="question-list" type="A">
+                <li class="question" data-question="003-A"><span class="evidence-badge opik">Opik</span><div>Which short token names the spans showing the customer/request product before the tool call?<span class="choices">Choose one: <code>003.request-product-spans</code>, <code>003.tool-argument-span</code>, <code>003.final-answer-span</code>.</span></div></li>
+                <li class="question" data-question="003-B"><span class="evidence-badge opik">Opik</span><div>Which span shows the actual tool arguments sent to the refund calculator?</div></li>
+                <li class="question" data-question="003-C"><span class="evidence-badge code">Code</span><div>In <code>cases/case_003_tool_argument.py</code>, what short token names the hard-coded argument or mapping causing the tool to receive <code>product="pro"</code>?<span class="choices">Choose one: <code>product=pro</code>, <code>product=starter</code>, <code>region=hk</code>.</span></div></li>
+                <li class="question" data-question="003-D"><span class="evidence-badge opik">Opik</span><div>What should the manager conclude: tool failure, mapping failure, or model failure?<span class="choices">Choose one: <code>tool-failure</code>, <code>mapping-failure</code>, <code>model-failure</code>.</span></div></li>
+              </ol>
+              <div class="answer-template">
+                <pre><code id="template-003">Case: 003
+A:
+B:
+C:
+D:</code></pre>
+                <button type="button" data-copy-case="003">Copy template</button>
+              </div>
+            </div>
+          </details>
+
+          <details class="case" id="case-004">
+            <summary>
+              <span class="case-number">004</span>
+              <span class="case-title"><strong>Streamed draft was persisted after cutoff</strong><small>Incomplete generation and persistence / 4 questions</small></span>
+              <span class="case-toggle" aria-hidden="true"></span>
+            </summary>
+            <div class="case-body">
+              <p class="ba-flag"><strong>BA flag:</strong> The ticket summary looks incomplete. BA wants to know whether this was a model quality issue or an application persistence issue.</p>
+              <ol class="question-list" type="A">
+                <li class="question" data-question="004-A"><span class="evidence-badge opik">Opik</span><div>Which span shows the streamed model output and finish reason?</div></li>
+                <li class="question" data-question="004-B"><span class="evidence-badge opik">Opik</span><div>What finish reason did the model return?</div></li>
+                <li class="question" data-question="004-C"><span class="evidence-badge opik">Opik</span><div>Which span persisted the answer despite the incomplete stream?</div></li>
+                <li class="question" data-question="004-D"><span class="evidence-badge code">Code</span><div>In <code>cases/case_004_stream_cutoff.py</code>, which missing check should block saving?<span class="choices">Choose one: <code>finish-reason-check</code>, <code>ticket-id-check</code>, <code>region-check</code>.</span></div></li>
+              </ol>
+              <div class="answer-template">
+                <pre><code id="template-004">Case: 004
+A:
+B:
+C:
+D:</code></pre>
+                <button type="button" data-copy-case="004">Copy template</button>
+              </div>
+            </div>
+          </details>
+
+          <details class="case" id="case-005">
+            <summary>
+              <span class="case-number">005</span>
+              <span class="case-title"><strong>Issue summary contains unsafe comment text</strong><small>Untrusted retrieved context / 4 questions</small></span>
+              <span class="case-toggle" aria-hidden="true"></span>
+            </summary>
+            <div class="case-body">
+              <p class="ba-flag"><strong>BA flag:</strong> The GitHub issue summary includes an internal debug token and tells support to bypass approval.</p>
+              <ol class="question-list" type="A">
+                <li class="question" data-question="005-A"><span class="evidence-badge opik">Opik</span><div>Which retrieved item contains the unsafe instruction?</div></li>
+                <li class="question" data-question="005-B"><span class="evidence-badge opik">Opik</span><div>Which span shows that untrusted text was included in the prompt without a boundary?</div></li>
+                <li class="question" data-question="005-C"><span class="evidence-badge opik">Opik</span><div>Which span shows the guardrail result?</div></li>
+                <li class="question" data-question="005-D"><span class="evidence-badge opik">Opik</span><div>What should the manager decide for this summary?<span class="choices">Choose one: <code>approve</code>, <code>block-or-rewrite</code>, <code>manual-review-only</code>.</span></div></li>
+              </ol>
+              <div class="answer-template">
+                <pre><code id="template-005">Case: 005
+A:
+B:
+C:
+D:</code></pre>
+                <button type="button" data-copy-case="005">Copy template</button>
+              </div>
+            </div>
+          </details>
+
+          <details class="case" id="case-006">
+            <summary>
+              <span class="case-number">006</span>
+              <span class="case-title"><strong>Release candidate looks good but gate is weak</strong><small>Experiment metrics and selection / 4 questions</small></span>
+              <span class="case-toggle" aria-hidden="true"></span>
+            </summary>
+            <div class="case-body">
+              <p class="ba-flag"><strong>BA flag:</strong> The app selected a prompt version for release, but BA believes another candidate is safer.</p>
+              <ol class="question-list" type="A">
+                <li class="question" data-question="006-A"><span class="evidence-badge opik">Opik</span><div>In Logs, which prompt version did the app select?</div></li>
+                <li class="question" data-question="006-B"><span class="evidence-badge experiment">Experiments</span><div>In Experiments, which prompt version should ship based on faithfulness and release-gate scores?</div></li>
+                <li class="question" data-question="006-C"><span class="evidence-badge experiment">Experiments</span><div>Which metric made the selected candidate look attractive?</div></li>
+                <li class="question" data-question="006-D"><span class="evidence-badge code">Code</span><div>In <code>cases/case_006_release_gate.py</code>, what short token names the missing release selection condition?<span class="choices">Choose one: <code>faithfulness-expert-gate</code>, <code>cost-only-gate</code>, <code>answer-relevance-gate</code>.</span></div></li>
+              </ol>
+              <div class="answer-template">
+                <pre><code id="template-006">Case: 006
+A:
+B:
+C:
+D:</code></pre>
+                <button type="button" data-copy-case="006">Copy template</button>
+              </div>
+            </div>
+          </details>
         </div>
       </section>
 
-      <section class="split">
+      <section class="submission" aria-labelledby="submission-title">
         <div>
-          <h2>Submission Format</h2>
-          <p>
-            Open one issue for your group, then submit answers as comments in
-            the issue timeline. Each new comment is graded once. Keep answers
-            deterministic and short: exact span names, document IDs, metric
-            names, or choice tokens only.
-          </p>
+          <p class="section-label">Manager report</p>
+          <h2 id="submission-title">Submit short, exact answers</h2>
+          <p>Open one issue for your group. Add or retry answers in comments; every new non-bot comment is graded once.</p>
         </div>
-        <pre><code>Case: 001
-A: &lt;short-answer-token&gt;
-B: &lt;span-name&gt;
-C: &lt;document-id&gt;
-D: &lt;choice-token&gt;</code></pre>
+        <a class="button primary" href="https://github.com/alex-au-922/hkpug-opik-mini-workshop/issues/new/choose">Open submission issue</a>
       </section>
     </main>
+
+    <footer>
+      <span>HKPUG Opik Mini Workshop</span>
+      <a href="#top">Back to top</a>
+    </footer>
   </body>
 </html>

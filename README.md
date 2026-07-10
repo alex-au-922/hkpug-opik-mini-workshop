@@ -5,6 +5,7 @@ Participant repository for the HKPUG Opik trace-debugging mini workshop.
 Start here:
 
 - Workshop site: https://alex-au-922.github.io/hkpug-opik-mini-workshop/
+- Questions: https://alex-au-922.github.io/hkpug-opik-mini-workshop/#questions
 - Code pane: https://group-00.opik-workshop.python.hk/code
 - Opik pane: https://group-00.opik-workshop.python.hk/opik
 
